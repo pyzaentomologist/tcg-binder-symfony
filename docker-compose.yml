@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0.34
+    container_name: tcg-binder-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - db-vol:/var/lib/mysql
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tcg-binder-php
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      - mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: myapp-phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: ${PMA_HOST}
+      PMA_USER: ${PMA_USER}
+      PMA_PASSWORD: ${PMA_PASSWORD}
+
+volumes:
+  db-vol:
