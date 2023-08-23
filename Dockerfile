@@ -1,5 +1,3 @@
-# Dockerfile
-
 FROM php:8.2-fpm
 
 WORKDIR /var/www/html
@@ -14,5 +12,7 @@ RUN docker-php-ext-install pdo pdo_mysql intl opcache
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 RUN composer create-project symfony/skeleton tcg-binder
+
+COPY .env .env.local tcg-binder-php:/var/www/html/
 
 CMD ["php-fpm"]
